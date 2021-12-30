@@ -2,9 +2,10 @@
 #include<glad/glad.h>
 #include<stb_image/stb_image.h>
 
-Texture::Texture(const char* file, int slot)
+Texture::Texture(const char* file, unsigned int format, unsigned int slot)
+	:	m_Slot(slot)
 {
-	stbi_set_flip_vertically_on_load(1);
+	stbi_set_flip_vertically_on_load(true);
 
 	m_Buffer = stbi_load(file, &m_Width, &m_Height, &m_BPP, 4);
 
@@ -17,7 +18,7 @@ Texture::Texture(const char* file, int slot)
 	glad_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glad_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_Buffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, format, GL_UNSIGNED_BYTE, m_Buffer);
 
 	glad_glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -34,6 +35,7 @@ Texture::~Texture()
 
 void Texture::Bind() const
 {
+	glActiveTexture(GL_TEXTURE0 + m_Slot);
 	glad_glBindTexture(GL_TEXTURE_2D, TexID);
 }
 

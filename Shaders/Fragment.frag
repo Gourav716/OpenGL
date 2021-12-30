@@ -7,7 +7,8 @@ in vec2 tex;
 in vec3 normal;
 in vec3 fragPos;
 
-uniform sampler2D u_texture;
+uniform sampler2D u_texColor;
+uniform sampler2D u_texSpecular;
 uniform vec3 u_lightColor;
 uniform vec3 u_lightPos;
 uniform vec3 u_cameraPos;
@@ -25,5 +26,5 @@ void main()
 	float specular = pow(max(dot(reflectDir, viewDir), 0.0f), 32.0f) * specAmount;
 
 	objectColor = vec4(color, 1.0f) * vec4(u_lightColor, 1.0f) * (ambient + diffuse + specular);
-	objectColor = texture(u_texture, tex) * vec4(u_lightColor, 1.0f) * (ambient + diffuse + specular);
+	objectColor = texture(u_texColor, tex) * vec4(u_lightColor, 1.0f) * (ambient + diffuse) + texture(u_texSpecular, tex).r * specular;
 }

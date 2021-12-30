@@ -38,15 +38,15 @@ int main()
 	   -0.5f, -0.5f,  0.5f,		1.0f, 0.0f, 0.0f,		0.0f, 0.0f,			 0.0f,  0.5f,  1.0f,				//0
 		0.5f, -0.5f,  0.5f,		0.0f, 1.0f, 0.0f,		2.0f, 0.0f,			 0.0f,  0.5f,  1.0f,				//1
 		0.0f,  0.5f,  0.0f,		0.0f, 0.0f, 1.0f,		1.0f, 2.0f,			 0.0f,  0.5f,  1.0f,				//2
-																					
+
 		0.5f, -0.5f,  0.5f,		0.0f, 0.0f, 1.0f,		0.0f, 0.0f,			 1.0f,  0.5f,  0.0f,				//3
 		0.5f, -0.5f, -0.5f,		1.0f, 0.0f, 1.0f,		2.0f, 0.0f,			 1.0f,  0.5f,  0.0f,				//4
 		0.0f,  0.5f,  0.0f,		1.0f, 1.0f, 0.0f,		1.0f, 2.0f,			 1.0f,  0.5f,  0.0f,				//5
-																					
+
 		0.5f, -0.5f, -0.5f,		0.0f, 1.0f, 1.0f,		0.0f, 0.0f,			 0.0f,  0.5f, -1.0f,				//6
 	   -0.5f, -0.5f, -0.5f,		0.5f, 0.0f, 0.5f,		2.0f, 0.0f,			 0.0f,  0.5f, -1.0f,				//7
 		0.0f,  0.5f,  0.0f,		0.5f, 0.5f, 0.0f,		1.0f, 2.0f,			 0.0f,  0.5f, -1.0f,				//8
-																					
+
 	   -0.5f, -0.5f, -0.5f,		0.5f, 0.0f, 0.5f,		0.0f, 0.0f,			-1.0f,  0.5f,  0.0f,				//9
 	   -0.5f, -0.5f,  0.5f,		0.5f, 0.5f, 0.0f,		2.0f, 0.0f,			-1.0f,  0.5f,  0.0f,				//10
 		0.0f,  0.5f,  0.0f,		0.0f, 0.5f, 0.5f,		1.0f, 2.0f,			-1.0f,  0.5f,  0.0f,				//11
@@ -121,7 +121,8 @@ int main()
 	VertexBuffer vb(sizeof(attributes), attributes);
 	IndexBuffer ib(sizeof(indices), indices);
 	Shader shader("Shaders/Vertex.vert", "Shaders/Fragment.frag");
-	Texture tex("Resources/Chainmail_Color.png");
+	Texture tex("Resources/Chainmail_Color.png", GL_RGBA, 0);
+	Texture tex1("Resources/Chainmail_Metalness.png", GL_RED, 1);
 
 	va.LinkAttribute(0, 3, 11 * sizeof(float), (void*)0);
 	va.LinkAttribute(1, 3, 11 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -132,6 +133,7 @@ int main()
 	vb.UnBind();
 	ib.UnBind();
 	tex.UnBind();
+	tex1.UnBind();
 
 	/* Light Creation */
 	VertexArray vaLight;
@@ -190,7 +192,9 @@ int main()
 		shader.Activate();
 		va.Bind();
 		tex.Bind();
-		shader.SetUniform1i("u_texture", 0);
+		shader.SetUniform1i("u_texColor", 0);
+		tex1.Bind();
+		shader.SetUniform1i("u_texSpecular", 1);
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::rotate(model, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
